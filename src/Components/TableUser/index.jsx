@@ -1,53 +1,52 @@
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { fetchAllUser } from '../../Services/UserService'
+import { Table } from 'react-bootstrap';
 
 const ListUser = (props) => {
-  const [listUser, setListuser] = useState([]);
+  const [listUser, setListUser] = useState([]);
 
   useEffect(() => {
+    //callAPI
     getUser();
   }, [])
 
   const getUser = async () => {
     let res = await fetchAllUser();
-    if (res && res.data && res.data.data) {
-      setListuser(res.data.data);
+    if (res && res.data) {//check tồn tại
+      setListUser(res.data);
     }
-    console.log("check", res);
+    // console.log("check", res);
   }
+
 
   return (
     <>
-      <table className="table">
+      <Table striped bordered hover>
         <thead>
           <tr>
-            <th scope="col">id</th>
-            <th scope="col">email</th>
-            <th scope="col">first_name</th>
-            <th scope="col">last_name</th>
+            <th>ID</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
           </tr>
         </thead>
         <tbody>
-          {
-            listUser
-            && listUser.length > 0
-            && listUser.map((user) => {
-
+          {listUser &&
+            listUser.map((user, index) => {
               return (
-                <tr key={user.id}>
-                  <th scope="row">{user.id}</th>
+
+                <tr key={index}>
+                  <td>{user.id}</td>
                   <td>{user.email}</td>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
                 </tr>
               )
+
             })
-
           }
-
         </tbody>
-      </table>
+      </Table>
     </>
   )
 }
