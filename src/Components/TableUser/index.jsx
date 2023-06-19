@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { fetchAllUser } from '../../Services/UserService'
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
+import ModalAddNew from '../Modal/addnew';
 
 const ListUser = ({ props, itemsPerPage }) => {
   const [listUser, setListUser] = useState([]);
-  const [itemOffset, setItemOffset] = useState(0);
   const [totalUsers, setTotalUser] = useState(0);
   const [totalPages, setTotalPage] = useState(0);
-
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     //callAPI
@@ -30,9 +30,18 @@ const ListUser = ({ props, itemsPerPage }) => {
     getUser(+event.selected + 1)
   };
 
+  const handeClose = () => setShow(false)
+  const handleShow = () => setShow(true);
 
+  const updateTableUser = (user) => {
+    setListUser([user, ...listUser]);
+  }
   return (
     <>
+      <div className="my-2 flex d-flex align-items-center justify-content-between a add-new ">
+        <div className="add-new-title text-uppercase fw-bold fs-3">List User</div>
+        <Button variant="primary" onClick={handleShow}>Add New</Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -59,6 +68,11 @@ const ListUser = ({ props, itemsPerPage }) => {
           }
         </tbody>
       </Table>
+      <ModalAddNew
+        show={show}
+        handleClose={handeClose}
+        updateTableUser={updateTableUser}
+      />
       <ReactPaginate
         breakLabel="..."
         nextLabel="next >"

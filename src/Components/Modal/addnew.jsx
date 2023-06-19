@@ -1,13 +1,48 @@
 import { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
+import { postCreateUser } from '../../Services/UserService';
+import { toast } from 'react-toastify';
 
 const ModalAddNew = (props) => {
-    const { show, handleClose } = props;
+    const { show, handleClose, updateTableUser } = props;
     const [name, setName] = useState('');
     const [job, setJob] = useState('')
 
-    const handlCreateUser = () => {
-        console.log(name, job);
+    const handlCreateUser = async () => {
+        if (name && job) {
+            let res = await postCreateUser(name, job)
+            console.log(res);
+            if (res && res.id) {
+                //success
+                handleClose();
+                toast.success('🦄 Create Success', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                updateTableUser({ first_name: name, id: res.id })
+            }
+        } else {
+            //error
+            toast.error('Please Check Input', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        setName('');
+        setJob('');
+
     }
 
     return (
@@ -49,6 +84,8 @@ const ModalAddNew = (props) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+
         </div>
     )
 }
