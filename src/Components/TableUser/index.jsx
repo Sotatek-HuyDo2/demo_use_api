@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { fetchAllUser } from '../../Services/UserService'
 import { Button, Table } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
-import ModalAddNew from '../Modal/addnew';
+import ModalAddNew from '../Modal/AddNew';
+import ModalEditUser from '../Modal/EditUser';
 
 const ListUser = ({ props, itemsPerPage }) => {
   const [listUser, setListUser] = useState([]);
   const [totalUsers, setTotalUser] = useState(0);
   const [totalPages, setTotalPage] = useState(0);
   const [show, setShow] = useState(false);
-
+  const [showEditUser, setShowEditUser] = useState(false)
+  const [dataUserEdit, setDataUserEdit] = useState({})
   useEffect(() => {
     //callAPI
     getUser();
@@ -30,11 +32,19 @@ const ListUser = ({ props, itemsPerPage }) => {
     getUser(+event.selected + 1)
   };
 
-  const handeClose = () => setShow(false)
+  const handleClose = () => {
+    setShow(false)
+    setShowEditUser(false)
+  }
   const handleShow = () => setShow(true);
 
   const updateTableUser = (user) => {
     setListUser([user, ...listUser]);
+  }
+
+  const handleShowEdit = (user) => {
+    setDataUserEdit(user);
+    setShowEditUser(true)
   }
   return (
     <>
@@ -49,6 +59,7 @@ const ListUser = ({ props, itemsPerPage }) => {
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -61,6 +72,14 @@ const ListUser = ({ props, itemsPerPage }) => {
                   <td>{user.email}</td>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
+                  <td>
+                    <button
+                      className='btn btn-warning mx-2'
+                      onClick={() => { handleShowEdit(user) }}
+                    >EDIT</button>
+                    <button className='btn btn-danger'>EDIT</button>
+
+                  </td>
                 </tr>
               )
 
@@ -68,11 +87,7 @@ const ListUser = ({ props, itemsPerPage }) => {
           }
         </tbody>
       </Table>
-      <ModalAddNew
-        show={show}
-        handleClose={handeClose}
-        updateTableUser={updateTableUser}
-      />
+
       <ReactPaginate
         breakLabel="..."
         nextLabel="next >"
@@ -92,6 +107,16 @@ const ListUser = ({ props, itemsPerPage }) => {
         breakLinkClassName="page-link"
         containerClassName="pagination"
         activeClassName="active"
+      />
+      <ModalAddNew
+        show={show}
+        handleClose={handleClose}
+        updateTableUser={updateTableUser}
+      />
+      <ModalEditUser
+        handleClose={handleClose}
+        show={showEditUser}
+        dataUserEdit={dataUserEdit}
       />
     </>
   )
