@@ -5,14 +5,21 @@ import ReactPaginate from 'react-paginate';
 import ModalAddNew from '../Modal/AddNew';
 import ModalEditUser from '../Modal/EditUser';
 import _ from 'lodash'
+import Confirm from '../Modal/Confirm';
 
 const ListUser = ({ props, itemsPerPage }) => {
+
   const [listUser, setListUser] = useState([]);
+
   const [totalUsers, setTotalUser] = useState(0);
   const [totalPages, setTotalPage] = useState(0);
+
   const [show, setShow] = useState(false);
+
   const [showEditUser, setShowEditUser] = useState(false)
-  const [dataUserEdit, setDataUserEdit] = useState({})
+  const [dataUser, setDataUser] = useState({})
+
+  const [showDeleteUser, setShowDeleteUser] = useState(false)
   useEffect(() => {
     //callAPI
     getUser();
@@ -39,17 +46,13 @@ const ListUser = ({ props, itemsPerPage }) => {
   const handleClose = () => {
     setShow(false)
     setShowEditUser(false)
+    setShowDeleteUser(false)
   }
   const handleShow = () => setShow(true);
 
   const handleShowEdit = (user) => {
-    setDataUserEdit(user);
+    setDataUser(user);
     setShowEditUser(true)
-  }
-
-  //Table data
-  const updateTableUser = (user) => {
-    setListUser([user, ...listUser]);
   }
 
   const HandleEditFromModal = (user) => {
@@ -58,6 +61,18 @@ const ListUser = ({ props, itemsPerPage }) => {
     cloneListUser[index].first_name = user.first_name
     setListUser(cloneListUser)
   }
+
+  const handleShowDeleteUser = (user) => {
+    setShowDeleteUser(true);
+    setDataUser(user)
+    console.log(user);
+  }
+  //Table data
+  const updateTableUser = (user) => {
+    setListUser([user, ...listUser]);
+  }
+
+
 
   return (
     <>
@@ -90,7 +105,7 @@ const ListUser = ({ props, itemsPerPage }) => {
                       className='btn btn-warning mx-2'
                       onClick={() => { handleShowEdit(user) }}
                     >EDIT</button>
-                    <button className='btn btn-danger'>DELETE</button>
+                    <button className='btn btn-danger' onClick={() => handleShowDeleteUser(user)} >DELETE</button>
 
                   </td>
                 </tr>
@@ -129,8 +144,13 @@ const ListUser = ({ props, itemsPerPage }) => {
       <ModalEditUser
         handleClose={handleClose}
         show={showEditUser}
-        dataUserEdit={dataUserEdit}
+        dataUserEdit={dataUser}
         HandleEditFromModal={HandleEditFromModal}
+      />
+      <Confirm
+        show={showDeleteUser}
+        handleClose={handleClose}
+        dataUserDelete={dataUser}
       />
     </>
   )

@@ -8,7 +8,7 @@ const ModalAddNew = (props) => {
     const [name, setName] = useState('');
     const [job, setJob] = useState('')
 
-    const handlCreateUser = async () => {
+    const handleCreateUser = async () => {
         if (name && job) {
             let res = await postCreateUser(name, job)
             console.log(res);
@@ -47,7 +47,12 @@ const ModalAddNew = (props) => {
 
     return (
         <div>
-            <Modal show={show} onHide={handleClose}>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>ADD NEW USER</Modal.Title>
                 </Modal.Header>
@@ -79,7 +84,7 @@ const ModalAddNew = (props) => {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handlCreateUser}>
+                    <Button variant="primary" onClick={handleCreateUser}>
                         Create
                     </Button>
                 </Modal.Footer>

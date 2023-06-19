@@ -11,13 +11,35 @@ const ModalEditUser = (props) => {
 
     const handleEditUser = async () => {
         let res = await putUpdateUser(name, job, uID)
-        if (res && res.updatedAt) {
+        if (res && res.updatedAt && name !== dataUserEdit.name) {
             HandleEditFromModal({
                 first_name: name,
                 id: dataUserEdit.id
             })
+            toast.success('🦄 Update User Success', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+
+            });
+            handleClose();
+        } else {
+            toast.error('Nothing to Update', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
-        handleClose();
     }
 
     useEffect(() => {
@@ -30,7 +52,12 @@ const ModalEditUser = (props) => {
 
     return (
         <div>
-            <Modal show={show} onHide={handleClose}>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>Edit User</Modal.Title>
                 </Modal.Header>
