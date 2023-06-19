@@ -1,18 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
-import { postCreateUser } from '../../../Services/UserService';
+import { postCreateUser, putUpdateUser } from '../../../Services/UserService';
 import { toast } from 'react-toastify';
 
 const ModalEditUser = (props) => {
-    const { show, handleClose, dataUserEdit } = props;
+    const { show, handleClose, dataUserEdit, HandleEditFromModal } = props;
     const [name, setName] = useState('');
     const [job, setJob] = useState('')
+    const [uID, setUid] = useState(0)
 
-    const handleEditUser = () => { }
+    const handleEditUser = async () => {
+        let res = await putUpdateUser(name, job, uID)
+        if (res && res.updatedAt) {
+            HandleEditFromModal({
+                first_name: name,
+                id: dataUserEdit.id
+            })
+        }
+        handleClose();
+    }
 
     useEffect(() => {
         if (show) {
             setName(dataUserEdit.first_name)
+            setUid(dataUserEdit.id)
         }
 
     }, [dataUserEdit])//call useEffect when click edit button(update dataUserEffect)
@@ -51,7 +62,7 @@ const ModalEditUser = (props) => {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleEditUser}>
+                    <Button variant="primary" onClick={() => handleEditUser()}>
                         Comfirm
                     </Button>
                 </Modal.Footer>

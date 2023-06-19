@@ -4,6 +4,7 @@ import { Button, Table } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import ModalAddNew from '../Modal/AddNew';
 import ModalEditUser from '../Modal/EditUser';
+import _ from 'lodash'
 
 const ListUser = ({ props, itemsPerPage }) => {
   const [listUser, setListUser] = useState([]);
@@ -17,6 +18,7 @@ const ListUser = ({ props, itemsPerPage }) => {
     getUser();
   }, [])
 
+  //PAGIN
   const getUser = async (page) => {
     let res = await fetchAllUser(page);
     if (res && res.data) {//check tồn tại
@@ -32,20 +34,31 @@ const ListUser = ({ props, itemsPerPage }) => {
     getUser(+event.selected + 1)
   };
 
+
+  //MODAL
   const handleClose = () => {
     setShow(false)
     setShowEditUser(false)
   }
   const handleShow = () => setShow(true);
 
-  const updateTableUser = (user) => {
-    setListUser([user, ...listUser]);
-  }
-
   const handleShowEdit = (user) => {
     setDataUserEdit(user);
     setShowEditUser(true)
   }
+
+  //Table data
+  const updateTableUser = (user) => {
+    setListUser([user, ...listUser]);
+  }
+
+  const HandleEditFromModal = (user) => {
+    let cloneListUser = _.cloneDeep(listUser)
+    let index = listUser.findIndex(item => item.id === user.id)
+    cloneListUser[index].first_name = user.first_name
+    setListUser(cloneListUser)
+  }
+
   return (
     <>
       <div className="my-2 flex d-flex align-items-center justify-content-between a add-new ">
@@ -77,7 +90,7 @@ const ListUser = ({ props, itemsPerPage }) => {
                       className='btn btn-warning mx-2'
                       onClick={() => { handleShowEdit(user) }}
                     >EDIT</button>
-                    <button className='btn btn-danger'>EDIT</button>
+                    <button className='btn btn-danger'>DELETE</button>
 
                   </td>
                 </tr>
@@ -117,6 +130,7 @@ const ListUser = ({ props, itemsPerPage }) => {
         handleClose={handleClose}
         show={showEditUser}
         dataUserEdit={dataUserEdit}
+        HandleEditFromModal={HandleEditFromModal}
       />
     </>
   )
