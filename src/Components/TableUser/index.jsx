@@ -4,7 +4,7 @@ import { Button, Table } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import ModalAddNew from '../Modal/AddNew';
 import ModalEditUser from '../Modal/EditUser';
-import _ from 'lodash'
+import _, { debounce } from 'lodash'
 import Confirm from '../Modal/Confirm';
 
 //css
@@ -28,6 +28,7 @@ const ListUser = ({ props, itemsPerPage }) => {
   const [sortField, setSortField] = useState('id')
 
   const [textSearch, setSearchText] = useState('')
+
   useEffect(() => {
     //callAPI
     getUser();
@@ -93,8 +94,9 @@ const ListUser = ({ props, itemsPerPage }) => {
     setListUser(cloneListUser)
   }
 
-  const handleSearch = (e) => {
+  const handleSearch = debounce((e) => {
     const { value } = e.target;
+    console.log(value);
     if (value) {
       let cloneListUser = _.cloneDeep(listUser);
       cloneListUser = listUser.filter((user) => user.email.includes(value))
@@ -102,8 +104,7 @@ const ListUser = ({ props, itemsPerPage }) => {
     } else {
       getUser()
     }
-
-  }
+  },1000)
 
   // console.log(sortBy, sortField);
 
