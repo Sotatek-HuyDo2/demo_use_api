@@ -1,0 +1,11 @@
+.icon-up,
+.icon-down {
+    cursor: pointer;
+    margin-left: 4px;
+    transition: transform 0.3s ease;
+}
+
+.icon-up:hover,
+.icon-down:hover {
+    transform: rotate(360deg);
+}

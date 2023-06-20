@@ -7,6 +7,9 @@ import ModalEditUser from '../Modal/EditUser';
 import _ from 'lodash'
 import Confirm from '../Modal/Confirm';
 
+//css
+import './table.scss'
+
 const ListUser = ({ props, itemsPerPage }) => {
 
   const [listUser, setListUser] = useState([]);
@@ -20,6 +23,11 @@ const ListUser = ({ props, itemsPerPage }) => {
   const [dataUser, setDataUser] = useState({})
 
   const [showDeleteUser, setShowDeleteUser] = useState(false)
+
+  const [sortBy, setSortBy] = useState('asc')
+  const [sortField, setSortField] = useState('id')
+
+  const [textSearch, setSearchText] = useState('')
   useEffect(() => {
     //callAPI
     getUser();
@@ -32,7 +40,6 @@ const ListUser = ({ props, itemsPerPage }) => {
       setListUser(res.data);
       setTotalUser(res.total);
       setTotalPage(res.total_pages)
-      console.log(res);
     }
     // console.log("check", res);>>
   }
@@ -65,27 +72,77 @@ const ListUser = ({ props, itemsPerPage }) => {
   const handleShowDeleteUser = (user) => {
     setShowDeleteUser(true);
     setDataUser(user)
-    console.log(user);
+  }
+
+  const handleDeleteFromModal = (uID) => {
+    let cloneListUser = _.cloneDeep(listUser)
+    cloneListUser = cloneListUser.filter((user) => user.id !== uID)
+    setListUser(cloneListUser);
   }
   //Table data
   const updateTableUser = (user) => {
     setListUser([user, ...listUser]);
   }
 
+  const handleSort = (sortBy, sortField) => {
+    setSortBy(sortBy)
+    setSortField(sortField)
+    let cloneListUser = _.cloneDeep(listUser)
+    cloneListUser = _.orderBy(cloneListUser, [sortField], [sortBy]);
+    // console.log(cloneListUser);
+    setListUser(cloneListUser)
+  }
 
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    if (value) {
+      let cloneListUser = _.cloneDeep(listUser);
+      cloneListUser = listUser.filter((user) => user.email.includes(value))
+      setListUser(cloneListUser)
+    } else {
+      getUser()
+    }
+
+  }
+
+  // console.log(sortBy, sortField);
 
   return (
     <>
-      <div className="my-2 flex d-flex align-items-center justify-content-between a add-new ">
+      <div className="my-2 flex d-flex align-items-center justify-content-between add-new ">
         <div className="add-new-title text-uppercase fw-bold fs-3">List User</div>
-        <Button variant="primary" onClick={handleShow}>Add New</Button>
+        <div className="action d-flex gap-2">
+          <input type="search" className='rounded-2 border px-2' placeholder='Search here...' onChange={(e) => handleSearch(e)} />
+          <Button variant="primary" onClick={handleShow}>Add New</Button>
+        </div>
+
       </div>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>
+              <span className='mx-1 sort'>ID</span>
+              <i
+                className="icon-down fa-solid fa-arrow-down-long"
+                onClick={() => handleSort('asc', 'id')}
+              ></i>
+              <i
+                className="icon-up fa-solid fa-arrow-up-long"
+                onClick={() => handleSort('desc', 'id')}
+              ></i>
+            </th>
             <th>Email</th>
-            <th>First Name</th>
+            <th>
+              <span className='mx-1'>First Name</span>
+              <i
+                className="icon-down fa-solid fa-arrow-down-long"
+                onClick={() => handleSort('asc', 'first_name')}
+              ></i>
+              <i
+                className="icon-up fa-solid fa-arrow-up-long"
+                onClick={() => handleSort('desc', 'first_name')}
+              ></i>
+            </th>
             <th>Last Name</th>
             <th>Action</th>
           </tr>
@@ -96,7 +153,8 @@ const ListUser = ({ props, itemsPerPage }) => {
               return (
 
                 <tr key={index}>
-                  <td>{user.id}</td>
+                  <td>
+                    {user.id}</td>
                   <td>{user.email}</td>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
@@ -151,6 +209,7 @@ const ListUser = ({ props, itemsPerPage }) => {
         show={showDeleteUser}
         handleClose={handleClose}
         dataUserDelete={dataUser}
+        handleDeleteFromModal={handleDeleteFromModal}
       />
     </>
   )

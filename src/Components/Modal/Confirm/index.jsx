@@ -1,13 +1,20 @@
-import { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
-import { postCreateUser } from '../../../Services/UserService';
+import { deleteUser } from '../../../Services/UserService';
 import { toast } from 'react-toastify';
 
 const Confirm = (props) => {
-    const { show, handleClose ,dataUserDelete} = props;
+    const { show, handleClose, dataUserDelete, handleDeleteFromModal } = props;
 
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
+        let res = await deleteUser(dataUserDelete.id)
+        if (res && +res.statusCode === 204) {
+            handleDeleteFromModal(dataUserDelete.id)
+            toast.success('Delete Success')
+            handleClose();
+        } else {
+            toast.error('Delete Error')
+        }
 
     }
 
@@ -26,9 +33,9 @@ const Confirm = (props) => {
                 <Modal.Body>
                     <div className="body-del">
                         <div className="body-del-title">
-                        This action can't be undone!, Are u sure delete this user?
-                        <br />
-                        <strong>email = {dataUserDelete.email}</strong>
+                            This action can't be undone!, Are u sure delete this user?
+                            <br />
+                            <strong>email = {dataUserDelete.email}</strong>
                         </div>
                     </div>
                 </Modal.Body>
