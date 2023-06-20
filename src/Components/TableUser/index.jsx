@@ -9,6 +9,7 @@ import Confirm from '../Modal/Confirm';
 
 //css
 import './table.scss'
+import { CSVDownload, CSVLink } from 'react-csv';
 
 const ListUser = ({ props, itemsPerPage }) => {
 
@@ -104,17 +105,39 @@ const ListUser = ({ props, itemsPerPage }) => {
     } else {
       getUser()
     }
-  },1000)
+  }, 1000)
 
   // console.log(sortBy, sortField);
 
+  const csvData = listUser
   return (
     <>
       <div className="my-2 flex d-flex align-items-center justify-content-between add-new ">
         <div className="add-new-title text-uppercase fw-bold fs-3">List User</div>
         <div className="action d-flex gap-2">
           <input type="search" className='rounded-2 border px-2' placeholder='Search here...' onChange={(e) => handleSearch(e)} />
-          <Button variant="primary" onClick={handleShow}>Add New</Button>
+
+          <label htmlFor="test" className='btn btn-warning'>
+            <i class="fa-solid fa-file-import mx-1"></i>
+            Import
+          </label>
+          <input type="file" className='d-none' id='test' />
+
+
+          <input type="file" className='d-none' id='import' />
+          <CSVLink
+            data={csvData}
+            filename={"my-file.csv"}
+            className="btn btn-primary"
+            target="_blank"
+          >
+            <i class="fa-solid fa-file-arrow-down mx-1"></i>
+            Download
+          </CSVLink>
+          <Button variant="success" onClick={handleShow}>
+            <i className="mx-1 fa-solid fa-circle-plus"></i>
+            Add New
+          </Button>
         </div>
 
       </div>
