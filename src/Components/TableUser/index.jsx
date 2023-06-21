@@ -6,10 +6,10 @@ import ModalAddNew from '../Modal/AddNew';
 import ModalEditUser from '../Modal/EditUser';
 import _, { debounce } from 'lodash'
 import Confirm from '../Modal/Confirm';
+import { CSVLink } from 'react-csv';
 
 //css
 import './table.scss'
-import { CSVDownload, CSVLink } from 'react-csv';
 
 const ListUser = ({ props, itemsPerPage }) => {
 
@@ -28,7 +28,9 @@ const ListUser = ({ props, itemsPerPage }) => {
   const [sortBy, setSortBy] = useState('asc')
   const [sortField, setSortField] = useState('id')
 
-  const [textSearch, setSearchText] = useState('')
+  // const [textSearch, setSearchText] = useState('')
+
+  const [dataExport, setDataExport] = useState([])
 
   useEffect(() => {
     //callAPI
@@ -106,19 +108,47 @@ const ListUser = ({ props, itemsPerPage }) => {
       getUser()
     }
   }, 1000)
-
+  // console.log(listUser);
   // console.log(sortBy, sortField);
 
-  const csvData = listUser
+  const getUserExport = (event, done) => {
+    let result = [];
+    if (listUser && listUser.length > 0) {
+      result.push(["ID", "Email", "First Name", "Last Name"])
+      listUser.map((item, index) => {
+        let arr = [];
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name
+        result.push(arr)
+      })
+      setDataExport(result)
+      done();
+    }
+  }
+  console.log(dataExport);
+  const csvData = [
+    ["firstname", "lastname", "email"],
+    ["Ahmed", "Tomi", "ah@smthing.co.com"],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+  ];
+  // console.log(csvData);
   return (
     <>
       <div className="my-2 flex d-flex align-items-center justify-content-between add-new ">
         <div className="add-new-title text-uppercase fw-bold fs-3">List User</div>
         <div className="action d-flex gap-2">
-          <input type="search" className='rounded-2 border px-2' placeholder='Search here...' onChange={(e) => handleSearch(e)} />
+          <input
+            type="search"
+            className='rounded-2 border px-2'
+            placeholder='Search here...'
+            onChange={(e) => handleSearch(e)}
+          />
 
           <label htmlFor="test" className='btn btn-warning'>
-            <i class="fa-solid fa-file-import mx-1"></i>
+            <i className="fa-solid fa-file-import mx-1"></i>
             Import
           </label>
           <input type="file" className='d-none' id='test' />
@@ -126,12 +156,13 @@ const ListUser = ({ props, itemsPerPage }) => {
 
           <input type="file" className='d-none' id='import' />
           <CSVLink
+            // filename={"users.csv"}
+            // className="btn btn-primary"
             data={csvData}
-            filename={"my-file.csv"}
-            className="btn btn-primary"
-            target="_blank"
+          // asyncOnClick={true}
+          // onClick={getUserExport}
           >
-            <i class="fa-solid fa-file-arrow-down mx-1"></i>
+            {/* <i className="fa-solid fa-file-arrow-down mx-1"></i> */}
             Download
           </CSVLink>
           <Button variant="success" onClick={handleShow}>
