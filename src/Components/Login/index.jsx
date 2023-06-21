@@ -1,18 +1,50 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './login.scss'
 import { useState } from 'react'
+import { loginApi } from '../../Services/UserService'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
-
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
+    const [showLoadingAPI, setShowLoadingAPI] = useState(false)
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        let token = localStorage.getItem("token")
+        if(token){
+            navigate('/')
+        }
+    }, [])
+
+    const handleLogin = async () => {
+        setShowLoadingAPI(true)
+        if (!email && !password) {
+            toast.error('Missing Email/Password');
+            return;
+        }
+        let res = await loginApi(email, password);
+        // console.log(res);
+        if (res && res.token) {//login success
+            localStorage.setItem('token', res.token)
+            toast.success('Login Success')
+            navigate('/')
+        } else {
+            if (res && res.status === 400) {
+                toast.error(res.data.error)
+            }
+        }
+        setShowLoadingAPI(false)
+    }
     return (
         <div className='login-container'>
             <div className="login-header">
                 <div className="login-header-title">LOGIN</div>
             </div>
             <div className="login-body">
-                <div className="login-body-text">Email or Username</div>
+                <div className="login-body-text">Email or Username ( eve.holt@reqres.in )</div>
                 <input
                     type="text"
                     className="login-body-input"
@@ -29,14 +61,17 @@ const Login = () => {
                 />
                 <button
                     className={email && password ? 'active' : ''}
-                    disabled={!email && !password}
+                    disabled={(!email && !password) || showLoadingAPI}
+                    onClick={() => handleLogin()}
                 >
-                    Login
+                    {showLoadingAPI && <i class="fa-solid fa-sync fa-spin "></i>}
+                    <span hidden={showLoadingAPI} >Login</span>
+
                 </button>
             </div>
             <div className="login-back">
                 <div className="login-back-text">
-                    <i class="fa-solid fa-chevron-left"></i> Go Back
+                    <i className="fa-solid fa-chevron-left"></i> Go Back
                 </div>
             </div>
 
