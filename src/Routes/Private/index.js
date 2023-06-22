@@ -11,16 +11,18 @@ const PrivateRoutes = (props) => {
             <Alert variant="danger" className='mt-3'>
                 <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
                 <p>
-                    You don't have a quyền to join this page :))
+                    You don't have a quyền to go to this page :))
                 </p>
             </Alert>
         </>
+    } else {
+        return (
+            <>
+                {props.children}
+            </>
+        )
     }
-    return (
-        <>
-            {props.children}
-        </>
-    )
+
 }
 
 export default PrivateRoutes

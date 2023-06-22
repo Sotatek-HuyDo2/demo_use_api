@@ -6,12 +6,9 @@ import { toast } from 'react-toastify'
 import { useContext } from 'react'
 import { UserContext } from '../../Context'
 import { useState } from 'react'
-import { useEffect } from 'react'
 
 const Header = (props) => {
 
-    const [hideHeader, setHideHeader] = useState(false)
-    // const location = useLocation();
     const navigate = useNavigate();
 
     const { logout, user } = useContext(UserContext)
@@ -26,7 +23,11 @@ const Header = (props) => {
         <>
             <Navbar bg="light" expand="lg">
                 <Container>
-                    <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+
+                    <NavLink to="/" className='nav-link fs-4 fw-semibold pb-1 mx-1 text-danger'>
+                        React-Bootstrap
+                    </NavLink>
+
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         {((user && user.auth === true && user.email !== '') || (window.location.pathname === '/')) &&

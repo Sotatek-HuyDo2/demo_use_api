@@ -40,6 +40,12 @@ const Login = () => {
     const handleGoBack = () => {
         navigate('/')
     }
+
+    const handlePress = (event) => {
+        if (event.code === 'Enter') {
+            handleLogin();
+        }
+    }
     return (
         <div className='login-container'>
             <div className="login-header">
@@ -52,7 +58,7 @@ const Login = () => {
                     className="login-body-input"
                     placeholder='Enter UserName or Email'
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => setEmail(event.target.value.trim())}
                 />
                 <input
                     type="password"
@@ -60,13 +66,14 @@ const Login = () => {
                     placeholder='Enter Password'
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    onKeyDown={(event) => handlePress(event)}
                 />
                 <button
                     className={email && password ? 'active' : ''}
                     disabled={(!email && !password) || showLoadingAPI}
                     onClick={() => handleLogin()}
                 >
-                    {showLoadingAPI && <i class="fa-solid fa-sync fa-spin "></i>}
+                    {showLoadingAPI && <i className="fa-solid fa-sync fa-spin "></i>}
                     <span hidden={showLoadingAPI} >Login</span>
 
                 </button>
