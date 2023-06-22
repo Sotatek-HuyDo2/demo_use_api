@@ -7,11 +7,17 @@ import { useContext } from 'react';
 import { UserContext } from '../../Context';
 import { useEffect } from 'react';
 import AppRoutes from '../../Routes/App';
+import { useSelector } from 'react-redux';
 
 
 const HomePage = () => {
+
+    const dataRedux = useSelector(state => state.user.account)
+    //state như là store reducer -> trỏ vào user(reducer) -> trỏ đến phần tử bên trong init_value là account của redducer  
+    console.log('>>> data User Redux', dataRedux);
+
     const { user, loginContext } = useContext(UserContext)
-    console.log('>>> user', user);
+    // console.log('>>> user', user);
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
