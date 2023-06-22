@@ -17,13 +17,6 @@ const Login = () => {
     const { loginContext } = useContext(UserContext)
 
 
-    // useEffect(() => {
-    //     let token = localStorage.getItem("token")
-    //     if (token) {
-    //         navigate('/')
-    //     }
-    // }, [])
-
     const handleLogin = async () => {
         setShowLoadingAPI(true)
         if (!email && !password) {

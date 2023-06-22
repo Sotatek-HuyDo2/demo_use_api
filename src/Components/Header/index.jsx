@@ -29,7 +29,7 @@ const Header = (props) => {
                     <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        {((user.auth === true && user.email !== '') || (window.location.pathname === '/')) &&
+                        {((user && user.auth === true && user.email !== '') || (window.location.pathname === '/')) &&
                             <>
                                 <Nav className="me-auto">
                                     <NavLink to="/" className='nav-link'>Home</NavLink>
