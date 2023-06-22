@@ -8,8 +8,20 @@ import Login from '../../Components/Login';
 import { Container } from 'react-bootstrap'
 import { ToastContainer } from 'react-toastify';
 import { Routes, Route } from "react-router-dom";
+import { useContext } from 'react';
+import { UserContext } from '../../Context';
+import { useEffect } from 'react';
+
 
 const HomePage = () => {
+    const { user, loginContext } = useContext(UserContext)
+    console.log('>>> user',user);
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            loginContext(localStorage.getItem('email'), localStorage.getItem('token'))
+        }
+    }, [])
     return (
         <>
             <div>
