@@ -1,40 +1,37 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import './login.scss'
 import { useState } from 'react'
-import { loginApi } from '../../Services/UserService'
 import { toast } from 'react-toastify'
-import { Link, useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import { UserContext } from '../../Context'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { handleLoginRedux } from '../../Redux/actions/userAction'
+import { useEffect } from 'react'
 
 const Login = () => {
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
-    const [showLoadingAPI, setShowLoadingAPI] = useState(false)
 
     const navigate = useNavigate();
 
-    const { loginContext } = useContext(UserContext)
+    const dispatch = useDispatch();
 
+    const isLoading = useSelector(state => state.user.isLoading);
+    const account = useSelector(state => state.user.account)
+    // console.log('>>> account: ', account);
+
+    useEffect(() => {
+        if (account && account.auth === true) {
+            navigate('/')
+            toast.success('Login Success')
+        }
+    }, [account])
 
     const handleLogin = async () => {
-        setShowLoadingAPI(true)
         if (!email && !password) {
             toast.error('Missing Email/Password');
             return;
         }
-        let res = await loginApi(email, password);
-        // console.log(res);
-        if (res && res.token) {//login success
-            loginContext(email, res.token);
-            toast.success('Login Success')
-            navigate('/')
-        } else {
-            if (res && res.status === 400) {
-                toast.error(res.data.error)
-            }
-        }
-        setShowLoadingAPI(false)
+        dispatch(handleLoginRedux(email, password));
     }
 
     const handleGoBack = () => {
@@ -70,11 +67,11 @@ const Login = () => {
                 />
                 <button
                     className={email && password ? 'active' : ''}
-                    disabled={(!email && !password) || showLoadingAPI}
+                    disabled={(!email && !password) || isLoading}
                     onClick={() => handleLogin()}
                 >
-                    {showLoadingAPI && <i className="fa-solid fa-sync fa-spin "></i>}
-                    <span hidden={showLoadingAPI} >Login</span>
+                    {isLoading && <i className="fa-solid fa-sync fa-spin "></i>}
+                    <span hidden={isLoading} >Login</span>
 
                 </button>
             </div>
