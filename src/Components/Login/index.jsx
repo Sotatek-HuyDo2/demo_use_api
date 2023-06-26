@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleLoginRedux } from '../../Redux/actions/userAction'
 import { useEffect } from 'react'
+import { handleLoginRedux } from '../../Redux/reducers/userSlice'
 
 const Login = () => {
     const [password, setPassword] = useState('')
@@ -17,8 +17,7 @@ const Login = () => {
 
     const isLoading = useSelector(state => state.user.isLoading);
     const account = useSelector(state => state.user.account)
-    // console.log('>>> account: ', account);
-
+    
     useEffect(() => {
         if (account && account.auth === true) {
             navigate('/')

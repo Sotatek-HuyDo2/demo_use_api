@@ -4,7 +4,7 @@ import { Container, Nav, NavDropdown, Navbar } from 'react-bootstrap'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleLogoutRedux } from '../../Redux/actions/userAction'
+import { handleLogoutRedux } from '../../Redux/reducers/userSlice'
 import { useEffect } from 'react'
 
 const Header = (props) => {
