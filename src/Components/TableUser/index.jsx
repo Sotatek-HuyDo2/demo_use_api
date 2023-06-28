@@ -41,6 +41,7 @@ const ListUser = ({ props, itemsPerPage }) => {
 
   //PAGIN
   const getUser = async (page) => {
+    //chờ thì thằng promise sẽ trả về thằng res = data
     let res = await fetchAllUser(page);
     if (res && res.data) {//check tồn tại
       setListUser(res.data);

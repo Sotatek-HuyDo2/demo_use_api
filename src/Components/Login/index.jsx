@@ -5,32 +5,55 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { handleLoginRedux } from '../../Redux/reducers/userSlice'
+import { fetchUserSuccess, handleLoginRedux } from '../../Redux/reducers/userSlice'
+import { loginApi } from '../../Services/UserService'
 
 const Login = () => {
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
-
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
-    const isLoading = useSelector(state => state.user.isLoading);
+    // const isLoading = useSelector(state => state.user.isLoading);
     const account = useSelector(state => state.user.account)
-    
+
     useEffect(() => {
         if (account && account.auth === true) {
             navigate('/')
-            toast.success('Login Success')
+            toast.success(`Welcome  ${account.email}`)
         }
     }, [account])
 
+    // const handleLogin = async () => {
+
+    //     if (!email && !password) {
+    //         toast.error('Missing Email/Password');
+    //         return;
+    //     }
+    //     dispatch(handleLoginRedux({
+    //         email: email,
+    //         password: password
+    //     }));
+    // }
+
     const handleLogin = async () => {
+        setIsLoading(true);
         if (!email && !password) {
             toast.error('Missing Email/Password');
             return;
         }
-        dispatch(handleLoginRedux(email, password));
+        let res = await loginApi(email, password);
+        if (res && res.token) {
+            localStorage.setItem('email', email);
+            localStorage.setItem('token', res.token);
+            navigate('/')
+            dispatch(fetchUserSuccess({ email: email, token: res.token }))
+        } else {
+            toast.error('Wrong Email/Password');
+        }
+        setIsLoading(false)
     }
 
     const handleGoBack = () => {

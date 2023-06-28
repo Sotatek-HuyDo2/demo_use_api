@@ -1,8 +1,8 @@
-// import axios from "axios";
+// import axios2 from "axios";
 import axios from "./axiosCustom"
 
-
 const fetchAllUser = (page) => {
+    //trả ra 1 promise
     return (
         axios.get(`/api/users?page=${page}`)
     )
